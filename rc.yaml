@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    app: nginx
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+            {
+                "name": "src",
+                "image": "evaluate/src",
+                "imagePullPolicy": "Never",
+                "command": ["cp", "-r", "/src/*", "/new_src"],
+                "volumeMounts": [
+                    {
+                        "name": "src",
+                        "mountPath": "/new_src"
+                    }
+                ]
+            }
+        ]'
+    spec:
+      containers:
+      - name: php
+        image: debian
+        command: ["sleep", "infinity"]
+        volumeMounts:
+        - mountPath: /new_src
+          name: src
+      volumes:
+      - name: src
+        emptyDir: {}

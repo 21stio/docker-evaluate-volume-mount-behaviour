@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  php:
+    image: debian
+    command: sleep infinity
+    volumes:
+      - src:/src
+  code:
+    build: .
+    command: sleep infinity
+    volumes:
+      - src:/src
+volumes:
+  src: {}
